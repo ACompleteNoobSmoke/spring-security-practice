@@ -59,6 +59,8 @@ public class ProjectSecurityConfig {
         //return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
+    //TIP <p>For example, use <b>&lt;b&gt;</b> for bold text.</p>
+
     @Bean
     public CompromisedPasswordChecker compromisedPasswordChecker() {
         return new HaveIBeenPwnedRestApiPasswordChecker();
