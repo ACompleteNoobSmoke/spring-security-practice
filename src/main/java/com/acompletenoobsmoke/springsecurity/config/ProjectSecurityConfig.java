@@ -12,9 +12,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,22 +49,21 @@ public class ProjectSecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails userDetails = User.withUsername("user").password("$2a$12$G.5usjzcirKCuTfH/098i.FrLUMjTWHvlFE/q237u4PjgUPNRzbsW").authorities("read").build();
-        UserDetails adminDetails = User.withUsername("admin").password("$2a$12$bmSpNlUvo.JXQK.sf0Sz5uVy.q/WzQ9QtRhgy2HgGzwMWDJlBdyMe").authorities("admin").build();
-        return new InMemoryUserDetailsManager(userDetails, adminDetails);
+    public UserDetailsService userDetailsService(DataSource dataSource) {
+        System.out.println(dataSource);
+        return new JdbcUserDetailsManager(dataSource);
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-      return new BCryptPasswordEncoder();
-        //return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+      //return new BCryptPasswordEncoder();
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     //TIP <p>For example, use <b>&lt;b&gt;</b> for bold text.</p>
 
-    @Bean
-    public CompromisedPasswordChecker compromisedPasswordChecker() {
-        return new HaveIBeenPwnedRestApiPasswordChecker();
-    }
+//    @Bean
+//    public CompromisedPasswordChecker compromisedPasswordChecker() {
+//        return new HaveIBeenPwnedRestApiPasswordChecker();
+//    }
 }
