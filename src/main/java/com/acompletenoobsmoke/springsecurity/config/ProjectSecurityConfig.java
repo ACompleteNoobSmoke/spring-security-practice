@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -38,25 +39,27 @@ public class ProjectSecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http)  throws Exception {
         System.out.println(apiList);
+        http.csrf(AbstractHttpConfigurer::disable);
 //        http.authorizeHttpRequests(request -> request.anyRequest().authenticated());
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(apiList.stream().toArray(String[]::new)).authenticated()
-                .requestMatchers("/", "/myNotice", "/myContact", "/error").permitAll());
+                .requestMatchers("/", "/register", "/myNotice", "/myContact", "/error").permitAll());
         http.formLogin(flc -> flc.disable());
         http.httpBasic(withDefaults());
         System.out.println("SWAMP IZZO");
         return http.build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService(DataSource dataSource) {
-        System.out.println(dataSource);
-        return new JdbcUserDetailsManager(dataSource);
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService(DataSource dataSource) {
+//        System.out.println(dataSource);
+//        return new JdbcUserDetailsManager(dataSource);
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
       //return new BCryptPasswordEncoder();
+        System.out.println("Using this PasswordEncoder");
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
