@@ -19,6 +19,7 @@ src/main/resources/secrets.properties
 *.iws
 *.iml
 *.ipr
+*prod*
 
 ### NetBeans ###
 /nbproject/private/
