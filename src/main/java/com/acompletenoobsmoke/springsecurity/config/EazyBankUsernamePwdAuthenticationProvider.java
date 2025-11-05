@@ -1,6 +1,7 @@
 package com.acompletenoobsmoke.springsecurity.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("!prod")
 @RequiredArgsConstructor
 public class EazyBankUsernamePwdAuthenticationProvider implements AuthenticationProvider {
     /**
@@ -25,11 +27,10 @@ public class EazyBankUsernamePwdAuthenticationProvider implements Authentication
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        System.out.println("Easy Bank Username Pwd Authentication Provider");
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
         UserDetails userDetails = easyBankUserDetailsService.loadUserByUsername(username);
-        if (!passwordEncoder.matches(password, userDetails.getPassword()))
-            throw new BadCredentialsException("Bad credentials");
         return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
     }
 
